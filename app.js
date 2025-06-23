@@ -6,7 +6,13 @@ const tasksRoute = require('./routes/tasks')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/tasks', tasksRoute)
+
+try{
+    app.use('/tasks', tasksRoute)
+}
+catch(e){
+    throw new Error("Module Tasks Route not found")
+}
 
 app.listen(port, (err) => {
     if (err) {

@@ -18,16 +18,17 @@ router.get('/:id', (req,res) =>{
     const taskId = req.params.id
     const task = tasks.find((item) => item.id == taskId )
     if(task){
-        res.status(201).json(task)
+        res.status(200).json(task)
     }else {
-        res.status(404).json({message:"Course Not Found"})
+        res.status(404).json({message:"Task Not Found"})
     }
 })
 
 router.post('/', (req,res) =>{
     const newTask = req.body
+    const keys = ['title', 'description' ,'completed']
 
-    if(!newTask || !newTask['title'] || !newTask['description'] || typeof(newTask['completed']? newTask['completed'] : false) !== "boolean"){
+    if(!newTask || !keys.every((item) => Object.keys(newTask).includes(item))){
         res.status(400).json({
             message: 'Bad Request: Invalid Data.'
         })
@@ -36,14 +37,14 @@ router.post('/', (req,res) =>{
     const idGenerated = (tasks.length +1)
     newTask.id= idGenerated
     tasks.push(newTask)
-    res.status(201).json({message:'Created successfully'})
+    res.status(201).json({message:`Successfully created new task for ${newTask.title}`})
 })
 
 router.put('/:id', (req,res) =>{
     const taskId = req.params.id
     const newTask = req.body
 
-    if(!newTask || !newTask['title'] || !newTask['description'] || typeof(newTask['completed']? newTask['completed'] : false) !== "boolean"){
+     if(!newTask || !keys.every((item) => Object.keys(newTask).includes(item))){
         res.status(400).json({
             message: 'Bad Request: Invalid Data.'
         })
@@ -56,9 +57,9 @@ router.put('/:id', (req,res) =>{
             completed: newTask.completed ? true: false,
             id: tasks[taskIndex]['id']
         }
-        res.status(200).json({message:`Updated datad for ${taskId}`})
+        res.status(200).json({message:`Updated data for ${taskId}`})
     } else {
-        res.status(404).json({message:"Course not found"})
+        res.status(404).json({message:"Task not found"})
     }
 })
 
@@ -70,7 +71,7 @@ router.delete('/:id', (req,res)=>{
         tasks.splice(taskIndex,1)
         res.send(tasks)
     }else {
-        res.status(404).json({message:"Course not found"})
+        res.status(404).json({message:"Task not found"})
     }
 })
 
